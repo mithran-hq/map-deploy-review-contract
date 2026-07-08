@@ -3,6 +3,7 @@ name = "map-deploy-review-contract"
 edition = "2021"
 version = "0.1.0"
 description = "Deterministic MAP manifest deploy-review contract"
+readme = "README.md"
 publish = false
 
 [dependencies]

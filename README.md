@@ -3,10 +3,11 @@
 This crate exposes the deterministic MAP manifest review contract for
 `apiVersion: map.mithran/v1`.
 
-`map-cli` can depend on this public repository without requiring access to the
-private `mithran-control-plane` source repository. The private control-plane
-repository owns the contract source and mirrors this crate here when the
-contract changes.
+`map-cli` can depend on the public mirror at
+`https://github.com/mithran-hq/map-deploy-review-contract` without requiring
+access to the private `mithran-control-plane` source repository. The private
+control-plane repository owns the contract source and mirrors this crate there
+when the contract changes.
 
 ## API
 
