@@ -1325,6 +1325,47 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn serialized_contract_uses_cli_json_shape() {
+        let blocked = review_manifest(None, "mithran.yaml");
+        let blocked_json = serde_json::to_value(&blocked).expect("blocked review serializes");
+        assert_eq!(
+            blocked_json["schema_version"],
+            MAP_DEPLOY_REVIEW_CONTRACT_SCHEMA
+        );
+        assert_eq!(blocked_json["apiVersion"], MAP_MANIFEST_API_VERSION);
+        assert_eq!(blocked_json["status"], "blocked");
+        assert_eq!(blocked_json["finding_codes"][0], "ERR_MANIFEST_MISSING");
+        assert!(blocked_json["findings"][0]["message"].as_str().is_some());
+        assert!(blocked_json.get("normalized_summary").is_none());
+
+        let passed = review_manifest(
+            Some(
+                r#"
+apiVersion: map.mithran/v1
+kind: MithranApp
+metadata:
+  app_id: demo
+  name: Demo
+identity:
+  project_ref: app:demo
+capabilities:
+  - kind: http
+    route: /
+    runtime: nodejs22
+    startup:
+      command: npm start
+"#,
+            ),
+            "mithran.yaml",
+        );
+        let passed_json = serde_json::to_value(&passed).expect("passed review serializes");
+        assert_eq!(passed_json["status"], "passed");
+        assert!(passed_json["findings"].as_array().unwrap().is_empty());
+        assert!(passed_json["finding_codes"].as_array().unwrap().is_empty());
+        assert!(passed_json["normalized_summary"].is_object());
+    }
 }
 
 /// Backward-compatible alias for callers using the control-plane function name.
