@@ -597,7 +597,7 @@ fn validate_and_normalize(manifest: MithranManifest) -> Result<ParseResult, Mani
             &mut findings,
             "ERR_UNKNOWN_FIELD",
             "unknown top-level manifest field is not part of mithran.yaml v1",
-            &format!("{extra_key}"),
+            extra_key,
         );
     }
 
@@ -1224,6 +1224,14 @@ pub fn finding_codes(error: ManifestError) -> Vec<String> {
     }
 }
 
+/// Backward-compatible alias for callers using the control-plane function name.
+pub fn map_deploy_review_contract(
+    manifest_yaml: Option<&str>,
+    manifest_path: impl Into<String>,
+) -> MapDeployReviewContract {
+    review_manifest(manifest_yaml, manifest_path)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1366,12 +1374,4 @@ capabilities:
         assert!(passed_json["finding_codes"].as_array().unwrap().is_empty());
         assert!(passed_json["normalized_summary"].is_object());
     }
-}
-
-/// Backward-compatible alias for callers using the control-plane function name.
-pub fn map_deploy_review_contract(
-    manifest_yaml: Option<&str>,
-    manifest_path: impl Into<String>,
-) -> MapDeployReviewContract {
-    review_manifest(manifest_yaml, manifest_path)
 }
